@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo de Memória - Letras</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f5;
+            color: #333;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        h1 {
+            color: #f32005;
+        }
+        .memory-game {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr); /* 8 colunas */
+            grid-template-rows: repeat(4, 1fr);  /* 4 linhas */
+            gap: 10px;
+            width: 100%;
+            max-width: 960px; /* Ajusta a largura máxima */
+        }
+        .card {
+            background-color: #4CAF50; /* Cor verde da carta */
+            border: 2px solid #333;
+            border-radius: 5px;
+            width: 100%;
+            height: 120px;
+            position: relative;
+            cursor: pointer;
+            transform-style: preserve-3d;
+            transition: transform 0.5s;
+        }
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backface-visibility: hidden;
+            border-radius: 5px;
+        }
+        .card-front {
+            background-color: #4CAF50;
+        }
+        .card-back {
+            background-color: #fff;
+            color: #333;
+            font-size: 2rem;
+            transform: rotateY(180deg);
+        }
+        .message {
+            margin-top: 20px;
+            font-size: 1.5rem;
+            color: #f32005;
+            font-weight: bold;
+        }
+        .restart-button {
+            display: none;
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1.2rem;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .restart-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Jogo de Memória - Letras</h1>
+    <div class="memory-game">
+        <!-- Cartas serão inseridas aqui via JavaScript -->
+    </div>
+    <div class="message"></div>
+    <button class="restart-button" onclick="restartGame()">Recomeçar</button>
+
+    <script>
+        const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        let shuffledCards = [];
+        const gameContainer = document.querySelector('.memory-game');
+        let flippedCards = [];
+        let matchedPairs = 0;
+
+        // Função para inicializar o jogo
+        function initGame() {
+            // Limpar o container de cartas e redefinir variáveis
+            gameContainer.innerHTML = '';
+            flippedCards = [];
+            matchedPairs = 0;
+            document.querySelector('.message').textContent = '';
+            document.querySelector('.restart-button').style.display = 'none';
+            
+            // Embaralhar as cartas
+            const cardsArray = alphabet.split('').map(letter => ({letter, matched: false}));
+            shuffledCards = [...cardsArray, ...cardsArray].sort(() => 0.5 - Math.random());
+
+            // Criar as cartas e inseri-las no tabuleiro
+            shuffledCards.forEach(card => {
+                const cardElement = document.createElement('div');
+                cardElement.classList.add('card');
+                cardElement.innerHTML = `
+                    <div class="card-face card-front"></div>
+                    <div class="card-face card-back">${card.letter}</div>
+                `;
+                cardElement.addEventListener('click', () => flipCard(cardElement, card));
+                gameContainer.appendChild(cardElement);
+            });
+        }
+
+        // Função para virar a carta
+        function flipCard(element, card) {
+            if (flippedCards.length < 2 && !card.matched && !element.classList.contains('flipped')) {
+                element.classList.add('flipped');
+                flippedCards.push({element, card});
+            
+                if (flippedCards.length === 2) {
+                    setTimeout(checkMatch, 1000);
+                }
+            }
+        }
+
+        // Função para verificar se há uma correspondência entre as cartas viradas
+        function checkMatch() {
+            const [firstCard, secondCard] = flippedCards;
+
+            if (firstCard.card.letter === secondCard.card.letter) {
+                firstCard.card.matched = true;
+                secondCard.card.matched = true;
+                matchedPairs++;
+                if (matchedPairs === alphabet.length) {
+                    document.querySelector('.message').textContent = 'Parabéns! Você encontrou todas as letras!';
+                    document.querySelector('.restart-button').style.display = 'block'; // Exibe o botão de recomeçar
+                }
+            } else {
+                firstCard.element.classList.remove('flipped');
+                secondCard.element.classList.remove('flipped');
+            }
+
+            flippedCards = [];
+        }
+
+        // Função para recomeçar o jogo
+        function restartGame() {
+            initGame(); // Chama a função de inicialização para recomeçar o jogo
+        }
+
+        // Inicializa o jogo na primeira vez
+        initGame();
+    </script>
+</body>
+</html>

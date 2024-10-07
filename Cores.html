@@ -1,0 +1,232 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <base href="Cores.html">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo das Cores - Professor Antonio M</title>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700&display=swap');
+    
+      body {
+        font-family: 'Nunito', sans-serif;
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+    
+      .container {
+        max-width: 800px;
+        margin: 2rem auto;
+        text-align: center;
+      }
+    
+      h1 {
+        font-family: 'Fredoka One', cursive;
+        color: #2C3E50;
+        font-size: 2.5rem;
+        margin-bottom: 2rem;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+      }
+    
+      .game-area {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+      }
+    
+      .color-display {
+        width: 200px;
+        height: 200px;
+        margin: 0 auto 2rem;
+        border-radius: 50%;
+        border: 5px solid #ddd;
+        transition: background-color 0.3s ease;
+      }
+    
+      .options {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+    
+      .option {
+        font-size: 1.2rem;
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: transform 0.1s ease, box-shadow 0.1s ease;
+      }
+    
+      .option:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+      }
+    
+      .timer {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        color: #34495E;
+      }
+    
+      .score {
+        font-size: 1.2rem;
+        margin-top: 1rem;
+        color: #2980B9;
+      }
+    
+      .back-button {
+        margin-top: 2rem;
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        background-color: #3498DB;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+    
+      .back-button:hover {
+        background-color: #2980B9;
+      }
+    
+      .sound-text {
+        font-size: 1.2rem;
+        color: #7F8C8D;
+        margin-top: 1rem;
+        min-height: 1.5em;
+      }
+    </style>
+    </head>
+    <body>
+      <div class="container">
+        <h1>Jogo das Cores</h1>
+        <div class="game-area">
+          <div class="timer">Tempo: <span id="time">30</span>s</div>
+          <div class="color-display" id="colorDisplay"></div>
+          <div class="options" id="options"></div>
+          <div class="score">Pontuação: <span id="score">0</span></div>
+          <div class="sound-text" id="soundText"></div>
+        </div>
+        <button class="back-button" onclick="window.location.href='index.html'">Voltar à Página Inicial</button>
+      </div>
+    
+      <script>
+        const colors = [
+          { name: 'Vermelho', hex: '#FF0000' },
+          { name: 'Azul', hex: '#0000FF' },
+          { name: 'Verde', hex: '#00FF00' },
+          { name: 'Amarelo', hex: '#FFFF00' },
+          { name: 'Laranja', hex: '#FFA500' },
+          { name: 'Roxo', hex: '#800080' },
+          { name: 'Rosa', hex: '#FFC0CB' },
+          { name: 'Marrom', hex: '#A52A2A' },
+          { name: 'Preto', hex: '#000000' },
+          { name: 'Branco', hex: '#FFFFFF' }
+        ];
+    
+        let score = 0;
+        let timeLeft = 30;
+        let currentColor;
+        let timer;
+    
+        const colorDisplay = document.getElementById('colorDisplay');
+        const options = document.getElementById('options');
+        const scoreDisplay = document.getElementById('score');
+        const timeDisplay = document.getElementById('time');
+        const soundText = document.getElementById('soundText');
+    
+        function startGame() {
+          score = 0;
+          timeLeft = 30;
+          updateScore();
+          nextRound();
+          startTimer();
+        }
+    
+        function nextRound() {
+          currentColor = colors[Math.floor(Math.random() * colors.length)];
+          colorDisplay.style.backgroundColor = currentColor.hex;
+    
+          const shuffledColors = [...colors].sort(() => 0.5 - Math.random()).slice(0, 4);
+          if (!shuffledColors.includes(currentColor)) {
+            shuffledColors[Math.floor(Math.random() * 4)] = currentColor;
+          }
+    
+          options.innerHTML = '';
+          shuffledColors.forEach(color => {
+            const button = document.createElement('button');
+            button.textContent = color.name;
+            button.className = 'option';
+            button.style.backgroundColor = color.hex;
+            button.style.color = getContrastColor(color.hex);
+            button.onclick = () => checkAnswer(color);
+            options.appendChild(button);
+          });
+        }
+    
+        function checkAnswer(selectedColor) {
+          if (selectedColor === currentColor) {
+            score++;
+            updateScore();
+            playSound('correct');
+            soundText.textContent = 'Som: "Correto!"';
+            nextRound();
+          } else {
+            playSound('wrong');
+            soundText.textContent = 'Som: "Tente novamente!"';
+          }
+        }
+    
+        function updateScore() {
+          scoreDisplay.textContent = score;
+        }
+    
+        function startTimer() {
+          clearInterval(timer);
+          timer = setInterval(() => {
+            timeLeft--;
+            timeDisplay.textContent = timeLeft;
+            if (timeLeft <= 0) {
+              clearInterval(timer);
+              endGame();
+            }
+          }, 1000);
+        }
+    
+        function endGame() {
+          options.innerHTML = `
+            <h2>Fim de Jogo!</h2>
+            <p>Sua pontuação final: ${score}</p>
+            <button onclick="startGame()">Jogar Novamente</button>
+          `;
+          colorDisplay.style.backgroundColor = '#FFFFFF';
+        }
+    
+        function getContrastColor(hexColor) {
+          const r = parseInt(hexColor.substr(1, 2), 16);
+          const g = parseInt(hexColor.substr(3, 2), 16);
+          const b = parseInt(hexColor.substr(5, 2), 16);
+          const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+          return (yiq >= 128) ? 'black' : 'white';
+        }
+    
+        function playSound(type) {
+          const audio = new Audio(type === 'correct' ? 'https://example.com/correct.mp3' : 'https://example.com/wrong.mp3');
+          audio.play();
+        }
+    
+        startGame();
+      </script>
+    </body>
+    </html>

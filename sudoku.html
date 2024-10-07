@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sudoku Avançado</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            gap: 10px;
+        }
+        .sudoku-container {
+            display: grid;
+            grid-template-columns: repeat(9, 40px);
+            grid-gap: 2px;
+            max-width: 400px;
+            margin-bottom: 20px;
+        }
+        .cell {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid #bbb;
+            background-color: #fff;
+            font-size: 1.2rem;
+        }
+        .cell input {
+            width: 100%;
+            height: 100%;
+            border: none;
+            text-align: center;
+            font-size: 1.2rem;
+            background-color: transparent;
+            outline: none;
+        }
+        .cell.fixed {
+            background-color: #e0e0e0;
+            font-weight: bold;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #4CAF50;
+            color: #fff;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .timer {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+        .tips {
+            font-size: 1rem;
+            margin: 10px 0;
+            background-color: #ffffff;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="timer" id="timer">Tempo: 00:00</div>
+    <div class="sudoku-container" id="sudoku-grid">
+        <!-- Sudoku cells will be generated here -->
+    </div>
+    <button onclick="validateSudoku()">Verificar Sudoku</button>
+    <button onclick="window.location.href='index.html';">Voltar para Blog</button>
+    <div class="tips">
+        <strong>Dicas de como resolver Sudoku:</strong>
+        <ul>
+            <li>Comece preenchendo números que têm apenas uma opção possível.</li>
+            <li>Use a técnica de 'varredura': verifique linhas, colunas e blocos para determinar quais números faltam.</li>
+            <li>Olhe para linhas e colunas cruzadas: se há apenas um lugar onde um número pode ir, coloque-o lá.</li>
+            <li>Participe do jogo com paciência; trate-o como um quebra-cabeça e divirta-se!</li>
+        </ul>
+    </div>
+
+    <script>
+        const sudokuContainer = document.getElementById('sudoku-grid');
+        const initialSudoku = [
+            [5, 3, '', '', 7, '', '', '', ''],
+            [6, '', '', 1, 9, 5, '', '', ''],
+            ['', 9, 8, '', '', '', '', 6, ''],
+
+            [8, '', '', '', 6, '', '', '', 3],
+            [4, '', '', 8, '', 3, '', '', 1],
+            [7, '', '', '', 2, '', '', '', 6],
+
+            ['', 6, '', '', '', '', 2, 8, ''],
+            ['', '', '', 4, 1, 9, '', '', 5],
+            ['', '', '', '', 8, '', '', 7, 9]
+        ];
+
+        let startTime;
+
+        function startTimer() {
+            startTime = new Date();
+            setInterval(function() {
+                const elapsedTime = new Date() - startTime;
+                const minutes = Math.floor((elapsedTime % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((elapsedTime % (1000 * 60)) / 1000);
+                document.getElementById('timer').textContent =
+                    `Tempo: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function createSudokuGrid() {
+            for (let row = 0; row < 9; row++) {
+                for (let col = 0; col < 9; col++) {
+                    const cell = document.createElement('div');
+                    cell.classList.add('cell');
+                    if (initialSudoku[row][col]) {
+                        cell.classList.add('fixed');
+                        cell.textContent = initialSudoku[row][col];
+                    } else {
+                        const input = document.createElement('input');
+                        input.setAttribute('type', 'text');
+                        input.setAttribute('maxlength', '1');
+                        input.oninput = function(event) {
+                            if (event.data && !/[1-9]/.test(event.data)) {
+                                input.value = '';
+                            }
+                        };
+                        cell.appendChild(input);
+                    }
+                    sudokuContainer.appendChild(cell);
+                }
+            }
+            startTimer();
+        }
+
+        function validateSudoku() {
+            const grid = sudokuContainer.getElementsByClassName('cell');
+            const sudoku = [];
+            for (let i = 0; i < 9; i++) {
+                sudoku[i] = [];
+                for (let j = 0; j < 9; j++) {
+                    const cell = grid[i * 9 + j];
+                    const value = cell.textContent || cell.querySelector('input').value;
+                    sudoku[i][j] = parseInt(value) || '';
+                }
+            }
+
+            if (isSudokuValid(sudoku)) {
+                const elapsedTime = (new Date() - startTime) / 1000;
+                const minutes = Math.floor(elapsedTime / 60);
+                const seconds = Math.floor(elapsedTime % 60);
+                alert(`Parabéns! O Sudoku está correto. Tempo: ${minutes}m ${seconds}s`);
+            } else {
+                alert('Ops! Existem erros no Sudoku. Verifique novamente.');
+            }
+        }
+
+        function isSudokuValid(sudoku) {
+            const isValidGroup = (group) => {
+                const values = group.filter(n => n);
+                return new Set(values).size === values.length;
+            };
+
+            for (let i = 0; i < 9; i++) {
+                if (!isValidGroup(sudoku[i])) return false;
+                if (!isValidGroup(sudoku.map(row => row[i]))) return false;
+                const box = [
+                    ...sudoku[Math.floor(i / 3) * 3 + 0].slice((i % 3) * 3, (i % 3) * 3 + 3),
+                    ...sudoku[Math.floor(i / 3) * 3 + 1].slice((i % 3) * 3, (i % 3) * 3 + 3),
+                    ...sudoku[Math.floor(i / 3) * 3 + 2].slice((i % 3) * 3, (i % 3) * 3 + 3),
+                ];
+                if (!isValidGroup(box)) return false;
+            }
+            return true;
+        }
+
+        createSudokuGrid();
+    </script>
+</body>
+</html>

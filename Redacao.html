@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Correção de Redação para Concursos</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f3f4f6;
+            padding: 20px;
+            margin: 0;
+            line-height: 1.6;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .editor {
+            margin: 20px auto;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+            padding: 10px;
+            resize: vertical;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+            margin-bottom: 10px;
+            transition: border-color 0.3s;
+        }
+        textarea:focus {
+            border-color: #4CAF50;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        button:hover {
+            background-color: #3cfc46;
+            transform: scale(1.05);
+        }
+        .result {
+            width: 100%;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .tips {
+            padding: 10px;
+            margin-top: 10px;
+            background-color: #e7f5ff;
+            border-left: 6px solid #0096c7;
+            border-radius: 5px;
+        }
+        .tips h4 {
+            margin: 0 0 5px 0;
+        }
+        .back-button {
+            display: block;
+            margin: 0 auto 20px auto;
+            background-color: #45a049;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 5px;
+            text-align: center;
+            text-decoration: none;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .back-button:hover {
+            background-color: #3cfc46;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <a href="Blog_index.html" class="back-button" aria-label="Voltar para página inicial">Voltar para a página inicial</a>
+    <h1>Correção Automática de Redação</h1>
+    <div class="editor">
+        <textarea id="essay-input" placeholder="Digite sua redação aqui..." aria-label="Entrada da redação"></textarea>
+        <button id="check-essay-btn" onclick="checkEssay()" aria-label="Corrigir redação">Corrigir Redação</button>
+        <div id="feedback" class="result" aria-live="polite"></div>
+        <textarea id="corrections" placeholder="Faça suas correções aqui..." readonly aria-label="Correções sugeridas"></textarea>
+    </div>
+
+    <script>
+        function checkEssay() {
+            const text = document.getElementById('essay-input').value;
+            const feedbackElement = document.getElementById('feedback');
+            const correctionsElement = document.getElementById('corrections');
+
+            feedbackElement.innerHTML = '';  // Limpar feedback anterior
+            const tipsSections = getTips(text);
+            const correctedText = getCorrections(text);
+
+            feedbackElement.innerHTML = generateFeedback(tipsSections);
+            correctionsElement.value = correctedText;
+        }
+
+        function getTips(text) {
+            const tips = [];
+
+            if (text.trim().length < 200) {
+                tips.push({
+                    title: "Comprimento do Texto",
+                    tip: "Sua redação parece curta. Tente desenvolver mais as ideias."
+                });
+            }
+            if (!hasKeyword(text, ["introdução", "apresentação"])) {
+                tips.push({
+                    title: "Introdução",
+                    tip: "Introduza o tema de forma clara para contextualizar o leitor."
+                });
+            }
+            if (!hasKeyword(text, ["desenvolvimento", "análise"])) {
+                tips.push({
+                    title: "Desenvolvimento",
+                    tip: "Desenvolva seus argumentos de maneira coesa e lógica."
+                });
+            }
+            if (!hasKeyword(text, ["conclusão", "sintetização"])) {
+                tips.push({
+                    title: "Conclusão",
+                    tip: "Ofereça um fechamento adequado, resumindo os principais pontos abordados."
+                });
+            }
+            if (!text.match(/[,|.]/)) {
+                tips.push({
+                    title: "Pontuação",
+                    tip: "Utilize pontuação correta para melhorar a fluidez do texto."
+                });
+            }
+
+            return tips;
+        }
+
+        function getCorrections(text) {
+            let correctedText = text;
+
+            if (!text.includes(".")) {
+                correctedText += ".";
+            }
+            correctedText = correctedText.replace(/\bmuito\b/g, "bastante");
+
+            return correctedText;
+        }
+
+        function hasKeyword(text, keywords) {
+            return keywords.some(keyword => new RegExp(`\\b${keyword}\\b`, "i").test(text));
+        }
+
+        function generateFeedback(tips) {
+            if (tips.length === 0) {
+                return "<p>Excelente! Sua redação parece bem estruturada.</p>";
+            }
+
+            let feedback = "<p>Dicas para melhorar sua redação:</p>";
+            tips.forEach(section => {
+                feedback += `<div class="tips"><h4>${section.title}</h4><p>${section.tip}</p></div>`;
+            });
+
+            return feedback;
+        }
+    </script>
+</body>
+</html>

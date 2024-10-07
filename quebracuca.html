@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quebra-cabeças de Lógica</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            text-align: center;
+            width: 90%;
+            max-width: 600px;
+        }
+        h1 {
+            margin-bottom: 20px;
+            font-size: 2rem;
+            color: #333;
+        }
+        .puzzle {
+            margin-bottom: 30px;
+            font-size: 1.2rem;
+            color: #555;
+        }
+        input[type="text"] {
+            padding: 10px;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .button-group, button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            display: inline-block;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .feedback {
+            font-size: 1.2rem;
+            color: #d9534f;
+        }
+        .timer {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #ffa500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Quebra-cabeças de Lógica</h1>
+        <div class="timer" id="timer">Tempo: 0s</div>
+        <div class="puzzle" id="puzzle">
+            <!-- Placeholder for the first puzzle -->
+            Ana, Bruno e Carlos estão em fila. Ana não está na frente. Quem está no meio?
+        </div>
+        <input type="text" id="answer" placeholder="Digite seu palpite">
+        <div class="button-group">
+            <button onclick="checkAnswer()">Enviar</button>
+            <button onclick="nextPuzzle()">Próximo Quebra-cabeça</button>
+        </div>
+        <div class="feedback" id="feedback"></div>
+        <button onclick="window.location.href='index.html'">Voltar ao Índice do Blog</button>
+    </div>
+
+    <script>
+        const puzzles = [
+            { question: "Ana, Bruno e Carlos estão em fila. Ana não está na frente. Quem está no meio?", answer: "bruno" },
+            { question: "Dois pais e dois filhos entram em um carro, mas apenas três pessoas estão dentro do carro. Como isso é possível?", answer: "avô, pai e filho" },
+            { question: "Se você tem apenas um fósforo e entra em um quarto frio e escuro onde há uma lâmpada de querosene, um aquecedor a óleo e uma vela, o que você acende primeiro?", answer: "fosforo" }
+        ];
+
+        let currentPuzzleIndex = 0;
+        let timeElapsed = 0;
+        let timer;
+
+        function startTimer() {
+            timer = setInterval(() => {
+                timeElapsed++;
+                document.getElementById('timer').textContent = `Tempo: ${timeElapsed}s`;
+            }, 1000);
+        }
+        
+        function stopTimer() {
+            clearInterval(timer);
+        }
+
+        function checkAnswer() {
+            const answerElement = document.getElementById('answer');
+            const feedbackElement = document.getElementById('feedback');
+            const userAnswer = answerElement.value.trim().toLowerCase();
+            const correctAnswer = puzzles[currentPuzzleIndex].answer;
+
+            if (userAnswer === correctAnswer) {
+                feedbackElement.textContent = 'Correto!';
+                feedbackElement.style.color = '#5cb85c';
+            } else {
+                feedbackElement.textContent = 'Erro. Tente novamente.';
+                feedbackElement.style.color = '#d9534f';
+            }
+        }
+
+        function nextPuzzle() {
+            const feedbackElement = document.getElementById('feedback');
+            feedbackElement.textContent = '';
+
+            if (currentPuzzleIndex < puzzles.length - 1) {
+                currentPuzzleIndex++;
+                document.getElementById('puzzle').textContent = puzzles[currentPuzzleIndex].question;
+                document.getElementById('answer').value = '';
+            } else {
+                feedbackElement.textContent = `Você completou todos os quebra-cabeças em ${timeElapsed}s!`;
+                stopTimer();
+            }
+        }
+
+        window.onload = startTimer;
+    </script>
+</body>
+</html>

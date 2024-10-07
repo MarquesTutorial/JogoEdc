@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desafio Matemático</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #e8f0fe;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            text-align: center;
+            width: 500px;
+        }
+        .problem {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+        input[type="number"] {
+            padding: 10px;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .timer, .feedback {
+            font-size: 1.2rem;
+            margin: 20px 0;
+        }
+        .feedback {
+            color: #d9534f;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="timer" id="timer">Tempo restante: 60 segundos</div>
+        <div class="problem" id="problem">Carregando...</div>
+        <input type="number" id="answer" placeholder="Digite sua resposta">
+        <button onclick="checkAnswer()">Enviar</button>
+        <div class="feedback" id="feedback"></div>
+        <button onclick="window.location.href='index.html'">Voltar ao Índice do Blog</button>
+    </div>
+
+    <script>
+        let timeRemaining = 60;
+        let currentProblem, solution;
+        
+        function startTimer() {
+            const timerElement = document.getElementById('timer');
+            const interval = setInterval(() => {
+                if (timeRemaining > 0) {
+                    timeRemaining--;
+                    timerElement.textContent = `Tempo restante: ${timeRemaining} segundos`;
+                } else {
+                    clearInterval(interval);
+                    alert('O tempo acabou! Vamos reiniciar o desafio.');
+                    resetGame();
+                }
+            }, 1000);
+        }
+
+        function generateProblem() {
+            const num1 = Math.floor(Math.random() * 100);
+            const num2 = Math.floor(Math.random() * 100);
+            currentProblem = `${num1} + ${num2}`;
+            solution = num1 + num2;
+            document.getElementById('problem').textContent = `Quanto é ${num1} + ${num2}?`;
+        }
+
+        function checkAnswer() {
+            const answer = parseInt(document.getElementById('answer').value, 10);
+            const feedbackElement = document.getElementById('feedback');
+            if (answer === solution) {
+                feedbackElement.textContent = 'Correto! Vamos para o próximo.';
+                feedbackElement.style.color = '#5cb85c';
+                setTimeout(() => {
+                    generateProblem();
+                    document.getElementById('answer').value = '';
+                    feedbackElement.textContent = '';
+                }, 2000);
+            } else {
+                feedbackElement.textContent = 'Ops! Tente novamente.';
+                feedbackElement.style.color = '#d9534f';
+            }
+        }
+
+        function resetGame() {
+            timeRemaining = 60;
+            generateProblem();
+            startTimer();
+            document.getElementById('answer').value = '';
+            document.getElementById('feedback').textContent = '';
+        }
+
+        // Inicialização do jogo
+        generateProblem();
+        startTimer();
+    </script>
+</body>
+</html>

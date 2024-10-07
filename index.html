@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog de Atividades e Jogos</title>
+    <style>
+        @media screen and (min-width: 800px) {
+  .header {
+    margin: 1em 2em;
+  }
+}
+        body {
+            overflow-x: hidden;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f5;
+            color: #333;
+            margin: 0;
+        }
+        .header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+        }
+        h1 {
+            font-size: 2.5rem;
+        }
+        p {
+            font-size: 1.25rem;
+            margin-top: inherit;
+        }
+        .content {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            border-radius: 8px;
+        }
+        .game-entry {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+        .game-entry:hover {
+            transform: scale(1.05);
+        }
+        .game-entry img {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+        .game-title {
+            font-size: 1.2rem;
+            color: #4CAF50;
+        }
+        .play-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+        .play-button:hover {
+            background-color: #45a049;
+        }
+        .footer {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            margin-top: 20px;
+            
+        }
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            p {
+                font-size: 1rem;
+            }
+            .game-entry img {
+                width: 80px;
+                height: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Blog de Atividades e Jogos</h1>
+        <p>Explore, jogue e resolva desafios divertidos!</p>
+    </div>
+    <div class="content">
+        <div class="game-entry">
+            <img src="cores.jpg" alt="Encontre as cores">
+            <h2 class="game-title">encontre as cores</h2>
+            <p>Encontre as cores que sera mostrada neste clássico jogo de encontre as cores corretamente.</p>
+            <a href="Cores.html" class="play-button">Jogar Agora</a>
+        </div>
+        <div class="game-entry">
+            <img src="Sudoku.jpg" alt="Sudoku avançado">
+            <h2 class="game-title">Sudoku Avançado</h2>
+            <p>Desafie seus neurônios com puzzles Sudoku de diferentes níveis.</p>
+            <a href="sudoku.html" class="play-button">Jogar Agora</a>
+        </div>
+        <div class="game-entry">
+            <img src="Quiz.jpg" alt="Quiz de conhecimentos gerais">
+            <h2 class="game-title">Quiz de Conhecimentos Gerais</h2>
+            <p>Teste seu conhecimento em diversas áreas com este quiz desafiador.</p>
+            <a href="Quizgeral.html" class="play-button">Jogar Agora</a>
+        </div>
+        <div class="game-entry">
+            <img src="hand.jpg" alt="Quebra-cabeça de lógica">
+            <h2 class="game-title">Quebra-cabeça de Lógica</h2>
+            <p>Resolvendo problemas lógicos para aumentar suas habilidades mentais!</p>
+            <a href="quebracuca.html" class="play-button">Jogar Agora</a>
+        </div>
+        <div class="game-entry">
+            <img src="Mem.jpg" alt="Jogo de memória">
+            <h2 class="game-title">Jogo de Memória</h2>
+            <p>Aprimore sua memória com este jogo divertido e educativo.</p>
+            <a href="jogomemoria.html" class="play-button">Jogar Agora</a>
+        </div>
+        <div class="game-entry">
+            <img src="desafio.jpg" alt="Desafio matemático">
+            <h2 class="game-title">Desafio Matemático</h2>
+            <p>Eleve suas habilidades matemáticas com desafios envolventes.</p>
+            <a href="Soma.html" class="play-button">Jogar Agora</a>
+        </div>
+        <div class="game-entry">
+            <img src="Alfabeto.jpg" alt="Jogo do Alfabeto">
+            <h2 class="game-title">Jogo de Alfabeto</h2>
+            <p>Aprimore sua memória com este jogo divertido e educativo.</p>
+            <a href="Alfabeto.html" class="play-button">Jogar Agora</a>
+        </div>
+        <div class="game-entry">
+            <img src="desafio.jpg" alt="Desafio Redação">
+            <h2 class="game-title">Desafio das letras</h2>
+            <p>Eleve suas habilidades de aprendizagem com desafios envolventes sobre letras.</p>
+            <a href="AlfaSom.html" class="play-button">Jogar Agora</a>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>© 2023 Profº: Antonio. Todos os direitos reservados.</p>
+    </div>
+</body>
+</html>

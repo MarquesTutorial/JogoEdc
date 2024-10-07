@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Aventura do Alfabeto Sonoro</title>
+        <style>
+
+@media screen and (min-width: 800px) {
+  .game-container {
+    margin: 1em 2em;
+  }
+}
+
+          body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background-color: #c9caf5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+          }
+          #game-container {
+            background-color: #ffffff;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            text-align: center;
+          }
+          #letter-display {
+            font-size: 120px;
+            color: #ff69b4;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            cursor: pointer;
+          }
+          #options {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+          }
+          .option {
+            background-color: #87ceeb;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            padding: 15px 30px;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+          }
+          .option:hover {
+            background-color: #4682b4;
+            transform: scale(1.05);
+          }
+          #score {
+            font-size: 24px;
+            color: #32cd32;
+            margin-top: 20px;
+          }
+          #progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            margin-top: 20px;
+            overflow: hidden;
+          }
+          #progress {
+            width: 0%;
+            height: 100%;
+            background-color: #ffa500;
+            transition: width 0.5s ease-in-out;
+          }
+          #sound-icon {
+            font-size: 24px;
+            cursor: pointer;
+            margin-top: 10px;
+          }
+          #back-button {
+    top: 10px;
+    left: 10px;
+    background-color: #54c8f7;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+          #back-button:hover {
+    background-color: #07678d;
+    
+  }
+ strong{
+    color: #54c8f7;
+    font-size: 35px;
+ }
+ h1 {
+    color: #54c8f7;
+ }
+        </style>
+        </head>
+        <body>
+        <div id="game-container">
+            <button id="back-button" onclick="window.location.href='index.html'">Voltar à Página Inicial</button>
+          <h1>Aventura do Alfabeto Sonoro:<strong><br> Prof Antonio M.</strong></h1>
+          <div id="letter-display"></div>
+          <div id="sound-icon">🔊</div>
+          <div id="options"></div>
+          <div id="score">Pontuação: <span id="score-value">0</span></div>
+          <div id="progress-bar"><div id="progress"></div></div>
+        </div>
+        
+        <script>
+        const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        let currentLetter = '';
+        let score = 0;
+        let progress = 0;
+        
+        // Criar um objeto de áudio para cada letra
+        const audioMap = {};
+        alphabet.split('').forEach(letter => {
+          audioMap[letter] = new Audio(`https://alphabetgame.example.com/sounds/${letter.toLowerCase()}.mp3`);
+        });
+        
+        function getRandomLetter() {
+          return alphabet[Math.floor(Math.random() * alphabet.length)];
+        }
+        
+        function displayLetter() {
+          currentLetter = getRandomLetter();
+          document.getElementById('letter-display').textContent = currentLetter;
+        }
+        
+        function playLetterSound() {
+          audioMap[currentLetter].play();
+        }
+        
+        function createOptions() {
+          const optionsContainer = document.getElementById('options');
+          optionsContainer.innerHTML = '';
+          
+          const correctOption = currentLetter;
+          let options = [correctOption];
+          
+          while (options.length < 3) {
+            const randomLetter = getRandomLetter();
+            if (!options.includes(randomLetter)) {
+              options.push(randomLetter);
+            }
+          }
+          
+          options = options.sort(() => Math.random() - 0.5);
+          
+          options.forEach(option => {
+            const button = document.createElement('button');
+            button.textContent = option;
+            button.classList.add('option');
+            button.addEventListener('click', () => checkAnswer(option));
+            optionsContainer.appendChild(button);
+          });
+        }
+        
+        function checkAnswer(selectedLetter) {
+          if (selectedLetter === currentLetter) {
+            score++;
+            progress += 4;
+            if (progress > 100) progress = 100;
+            updateScore();
+            updateProgressBar();
+            playLetterSound();
+            
+            if (progress === 100) {
+              setTimeout(() => {
+                alert('Parabéns! Você completou o jogo do alfabeto!');
+                resetGame();
+              }, 1000);
+            } else {
+              setTimeout(nextRound, 1000);
+            }
+          } else {
+            alert('Ops! Tente novamente.');
+          }
+        }
+        
+        function updateScore() {
+          document.getElementById('score-value').textContent = score;
+        }
+        
+        function updateProgressBar() {
+          document.getElementById('progress').style.width = `${progress}%`;
+        }
+        
+        function nextRound() {
+          displayLetter();
+          createOptions();
+        }
+        
+        function resetGame() {
+          score = 0;
+          progress = 0;
+          updateScore();
+          updateProgressBar();
+          nextRound();
+        }
+        
+        document.getElementById('letter-display').addEventListener('click', playLetterSound);
+        document.getElementById('sound-icon').addEventListener('click', playLetterSound);
+        document.getElementById('back-button').addEventListener('click', () => {
+  if (confirm('Tem certeza que deseja voltar? Sua pontuação será perdida.')) {
+    window.location.href = 'index.html';
+  }
+});
+        nextRound();
+        </script>
+        </body>
+        </html>

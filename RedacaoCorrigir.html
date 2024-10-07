@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Correção de Redação para Concursos</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f3f4f6;
+            padding: 20px;
+            margin: 0;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .editor {
+            margin: 20px auto;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        textarea {
+            width: 200%;
+            height: 200px;
+            padding: 10px;
+            resize: vertical;
+            font-size: 1.2rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+            margin-bottom: 10px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            width: 200%;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .tips {
+            padding: 10px;
+            margin-top: 10px;
+            background-color: #e7f5ff;
+            border-left: 6px solid #0096c7;
+            border-radius: 5px;
+        }
+        .tips h4 {
+            margin: 0 0 5px 0;
+        }
+        .score {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #d9534f;
+        }
+        /* Estilos para o relógio */
+        #clock {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Correção Automática de Redação</h1>
+
+    <!-- Relógio Digital -->
+    <div id="clock"></div>
+
+    <div class="editor">
+        <textarea id="essay-input" placeholder="Digite sua redação aqui..."></textarea>
+        <button onclick="checkEssay()">Corrigir Redação</button>
+        <div id="feedback" class="result"></div>
+        <br>
+        <textarea id="corrections" placeholder="Faça suas correções aqui..." readonly></textarea>
+    </div>
+
+    <!-- Botão de Voltar -->
+    <div style="text-align: center; margin-top: 20px;">
+        <button onclick="window.location.href='blog_index.html'">Voltar para Blog</button>
+    </div>
+
+    <script>
+        // Função para atualizar o relógio digital
+        function updateClock() {
+            const clockElement = document.getElementById('clock');
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const seconds = now.getSeconds().toString().padStart(2, '0');
+            clockElement.textContent = `${hours}:${minutes}:${seconds}`;
+        }
+
+        // Atualiza o relógio a cada segundo
+        setInterval(updateClock, 1000);
+        updateClock(); // Chamada inicial para evitar atraso de 1 segundo
+
+        function checkEssay() {
+            const text = document.getElementById('essay-input').value;
+            const feedbackElement = document.getElementById('feedback');
+            const correctionsElement = document.getElementById('corrections');
+
+            let feedback = "";
+            const tipsSections = [];
+            let score = 100;
+
+            // Simulated checks (in reality, these would be more complex)
+            if (text.trim().length < 200) {
+                feedback += "<p>Sua redação parece curta. Tente desenvolver mais as ideias.</p>";
+                score -= 10;
+            }
+            if (!text.match(/\b(introdução|apresentação)\b/i)) {
+                tipsSections.push({
+                    title: "Introdução",
+                    tip: "Introduza o tema de forma clara para contextualizar o leitor."
+                });
+                score -= 10;
+            }
+            if (!text.match(/\b(desenvolvimento|análise)\b/i)) {
+                tipsSections.push({
+                    title: "Desenvolvimento",
+                    tip: "Desenvolva seus argumentos de maneira coesa e lógica."
+                });
+                score -= 10;
+            }
+            if (!text.match(/\b(conclusão|sintetização)\b/i)) {
+                tipsSections.push({
+                    title: "Conclusão",
+                    tip: "Ofereça um fechamento adequado, resumindo os principais pontos abordados."
+                });
+                score -= 10;
+            }
+            if (!text.match(/[,|.]/)) {
+                tipsSections.push({
+                    title: "Pontuação",
+                    tip: "Utilize pontuação correta para melhorar a fluidez do texto."
+                });
+                score -= 10;
+            }
+
+            // Suggested corrections:
+            let correctedText = text;
+            if (!text.includes(".")) {
+                correctedText += ".";
+            }
+            if (text.includes("muito")) {
+                correctedText = correctedText.replace(/muito/g, "bastante");
+            }
+
+            if (tipsSections.length > 0) {
+                feedback += "<p>Dicas para melhorar sua redação:</p>";
+                tipsSections.forEach(section => {
+                    feedback += `<div class="tips"><h4>${section.title}</h4><p>${section.tip}</p></div>`;
+                });
+            } else {
+                feedback += "<p>Excelente! Sua redação parece bem estruturada.</p>";
+            }
+
+            feedback += `<p class="score">Nota da Redação: ${score}/100</p>`;
+
+            feedbackElement.innerHTML = feedback;
+            correctionsElement.value = correctedText; // Show suggested corrections
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo Interativo do Alfabeto</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f8ff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 10px;
+        }
+        .game-container {
+            text-align: center;
+            width: 100%;
+            max-width: 1200px;
+        }
+        .letter {
+            font-size: 25rem;
+            color: #ff4500;
+            cursor: pointer;
+            transition: transform 0.3s ease-in-out;
+            margin-bottom: 20px;
+        }
+        .letter:hover {
+            transform: scale(1.1);
+        }
+        .animation {
+            animation: bounce 1s infinite alternate;
+        }
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-30px); }
+        }
+        .hint {
+            font-size: 2.25rem;
+            margin-top: 20px;
+            color: #4682b4;
+            margin-bottom: 20px;
+        }
+        .hint.red {
+            color: #ff0000; /* Vermelho */
+            font-weight: bold; /* Negrito */
+            font-size: 3rem; /* Tamanho maior */
+        }
+        button {
+            background-color: #054eb5;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            margin: 10px;
+            width: calc(50% - 20px);
+            max-width: 300px;
+        }
+        button:hover {
+            background-color: #4169e1;
+        }
+        @media (max-width: 480px) {
+            .letter {
+                font-size: 5rem;
+            }
+            .hint {
+            font-size: 1.25rem;
+            
+        }
+            .hint.red {
+            color: #ff0000; /* Vermelho */
+            font-weight: bold; /* Negrito */
+            font-size: 2rem; /* Tamanho maior */
+            }
+            button {
+                font-size: 0.875rem;
+                padding: 10px;
+                width: 100%;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div id="letter" class="letter animation">A</div>
+        <button onclick="prevLetter()">Voltar Letra</button>
+        <button onclick="nextLetter()">Próxima Letra</button>
+        <div id="hint" class="hint">Clique na letra para descobrir o que começa com ela!</div>
+    </div>
+    <button onclick="goToBlog()">Voltar para Blog</button>
+
+    <script>
+        const letters = [
+            { letter: 'A', word: 'Abelha' },
+            { letter: 'B', word: 'Bola' },
+            { letter: 'C', word: 'Cachorro' },
+            { letter: 'D', word: 'Danilo' },
+            { letter: 'E', word: 'Elefante' },
+            { letter: 'F', word: 'Foca' },
+            { letter: 'G', word: 'Gato' },
+            { letter: 'H', word: 'Heloísa' },
+            { letter: 'I', word: 'Igreja' },
+            { letter: 'J', word: 'Jardim' },
+            { letter: 'K', word: 'Ki-Wi' },
+            { letter: 'L', word: 'Laranja' },
+            { letter: 'M', word: 'Macaco' },
+            { letter: 'N', word: 'Navio' },
+            { letter: 'O', word: 'Ovo' },
+            { letter: 'P', word: 'Pato' },
+            { letter: 'Q', word: 'Queijo' },
+            { letter: 'R', word: 'Rato' },
+            { letter: 'S', word: 'Sopa' },
+            { letter: 'T', word: 'Tatu' },
+            { letter: 'U', word: 'Uva' },
+            { letter: 'V', word: 'Vaca' },
+            { letter: 'W', word: 'Wi-Fi' },
+            { letter: 'X', word: 'Xícara' },
+            { letter: 'Y', word: 'Yo-Yo' },
+            { letter: 'Z', word: 'Zero' },
+            
+            // Continue with other letters as needed...
+        ];
+        
+        let currentIndex = 0;
+
+        document.getElementById('letter').addEventListener('click', function() {
+            const hintElement = document.getElementById('hint');
+            hintElement.textContent = `A palavra é: ${letters[currentIndex].word}!`;
+            hintElement.classList.add('red'); // Adiciona a classe que deixa o texto vermelho
+        });
+
+        function nextLetter() {
+            currentIndex = (currentIndex + 1) % letters.length;
+            updateLetterAndHint();
+        }
+
+        function prevLetter() {
+            currentIndex = (currentIndex - 1 + letters.length) % letters.length;
+            updateLetterAndHint();
+        }
+
+        function updateLetterAndHint() {
+            const letterElement = document.getElementById('letter');
+            const hintElement = document.getElementById('hint');
+            
+            letterElement.textContent = letters[currentIndex].letter;
+            hintElement.textContent = "Clique na letra para descobrir o que começa com ela!";
+            hintElement.classList.remove('red'); // Remove a classe que deixa o texto vermelho
+        }
+
+        function goToBlog() {
+            window.location.href = "index.html";
+        }
+    </script>
+</body>
+</html>
